@@ -29,24 +29,19 @@ ROS(indigo)
 保证在编译安装本项目之前，系统里没有任何有关于cartographer的安装文件。若之前已经安装了cartographer和ceres-solver，则最好能够删除掉，包括/user/local/下的库和头文件，以及之前catkin_ws工作空间里的build文件夹。不然在编译cartographer_turtlebot包时可能会找不到function.cmake等文件。
 本项目编译和安装方法参考官方提供的方法：
 ```
-#Install wstool and rosdep.
 sudo apt-get update
 sudo apt-get install -y python-wstool python-rosdep ninja-build
 
-#Create a new workspace in 'cartographer_catkin_ws'.
 cd ~
 mkdir -p cartographer_catkin_ws/src
 cd ~/cartographer_catkin_ws/src
 
-#Git code from github.
 git clone git@github.com:wangqi123412431/cartographer_turtlebot.git
 
-#Install deb dependencies
 rosdep init
 rosdep update
 rosdep install --from-paths src --ignore-src --rosdistro=${ROS_DISTRO} -y
 
-#Build and install
 cd ~/cartographer_catkin_ws
 catkin_make_isolated --install --use-ninja
 source install_isolated/setup.bash
@@ -55,6 +50,7 @@ source install_isolated/setup.bash
 
 ----------
 ## 运行
+本项目针对镭神科技的激光雷达进行了相应的修改，编译后的cartographer_turtlebot无需任何改动，直接根据一下指令运行即可，只需注意雷达发布的主题名称为laser_scan。运行后会自动调用rviz显示构建的地图。
 
  - 运行leishen激光雷达：
 
