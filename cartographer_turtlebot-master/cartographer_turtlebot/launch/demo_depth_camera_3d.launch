@@ -1,0 +1,61 @@
+<!--
+  Copyright 2016 The Cartographer Authors
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<launch>
+  <param name="/use_sim_time" value="true" />
+
+  <node name="cartographer_node" pkg="cartographer_ros"
+      type="cartographer_node" args="
+          -configuration_directory
+              $(find cartographer_turtlebot)/configuration_files
+          -configuration_basename turtlebot_depth_camera_3d.lua"
+      output="screen" />
+
+  <node name="flat_world_imu_node" pkg="cartographer_turtlebot"
+      type="cartographer_flat_world_imu_node" output="screen">
+    <remap from="imu_in" to="/mobile_base/sensors/imu_data_raw" />
+    <remap from="imu_out" to="/imu" />
+  </node>
+
+  <node name="dropper" pkg="topic_tools" type="drop"
+        args="/camera/depth/image_raw 1 2" />
+
+  <node pkg="nodelet" type="nodelet" name="image_processing_manager"
+        args="manager" />
+  <node pkg="nodelet" type="nodelet" name="metricizer"
+        args="load depth_image_proc/convert_metric image_processing_manager">
+    <remap from="image_raw" to="/camera/depth/image_raw_drop" />
+    <remap from="image" to="/image" />
+  </node>
+  <node pkg="nodelet" type="nodelet" name="rectifier"
+        args="load image_proc/rectify image_processing_manager">
+    <remap from="image_mono" to="/image" />
+    <remap from="camera_info" to="/camera/depth/camera_info" />
+    <remap from="image_rect" to="/image_rect" />
+  </node>
+  <node pkg="nodelet" type="nodelet" name="cloudifier"
+        args="load depth_image_proc/point_cloud_xyz image_processing_manager">
+    <remap from="camera_info" to="/camera/depth/camera_info" />
+    <remap from="image_rect" to="/image_rect" />
+    <remap from="points" to="/points2" />
+  </node>
+
+  <node name="rviz" pkg="rviz" type="rviz" required="true"
+      args="-d $(find cartographer_turtlebot
+          )/configuration_files/demo_turtlebot.rviz" />
+  <node name="playbag" pkg="rosbag" type="play"
+      args="--clock $(arg bag_filename)" />
+</launch>

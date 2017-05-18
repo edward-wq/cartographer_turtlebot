@@ -1,0 +1,11 @@
+<launch>
+
+  <include file="$(find cartographer_turtlebot)/launch/turtlebot.launch">
+    <arg name="configuration_basename" value="turtlebot_leishen_lidar_2d.lua" />
+  </include>
+
+    <node name="rviz" pkg="rviz" type="rviz" required="true"
+      args="-d $(find cartographer_turtlebot
+        )/configuration_files/demo_turtlebot.rviz" />
+
+</launch>
