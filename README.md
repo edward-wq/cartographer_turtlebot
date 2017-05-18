@@ -11,11 +11,11 @@
 
 
  - 注意:
-由于网上比较流行的cartographer_ros编译方法是[hitcm][1]改进后的，该方法只对cartographer_ros进行了编译，在catkin_ws工作空间内省掉了独立编译和安装，编译起来方便许多。若想进一步编译google自己的cartographer时存在以下几点问题：
+由于网上比较流行的cartographer_ros编译方法是[hitcm][1]改进后的，该方法将官方的catkin_make_isolated方法改为catkin_make法，使catkin_ws工作空间内省掉了独立编译和安装，编译起来方便许多，该方法只对cartographer_ros进行了编译，并没有针对cartographer_turtlebot改成catkin_make编译的方法。若想进一步编译cartographer_turtlebot,使用其方法存在以下几点问题：
     - hitcm的cartographer版本太旧，编译cartographer_turtlebot会出现错误
-    - hitcm的方法是先分别编译安装cartographer、ceres-solver、cartographer_ros，且前两者安装在本地/usr/local目录下，这样就算cartographer版本是最新的，但在编译cartographer_turtlebot时会找不到cartographer的一些必要文件。
+    - hitcm的方法是先分别在catkin_ws外编译安装cartographer、ceres-solver，之后在catkin_ws内编译安装cartographer_ros，且前两者安装在本地/usr/local目录下，这样就算cartographer版本是最新的，但在编译cartographer_turtlebot时会找不到cartographer的一些必要文件。如果将cartographer和ceres-solver放入catkin_ws内编译，则catkin_ws不允许这种非ROS程序包的独立编译，所以此时必须用catkin_make_isolated法编译。
  
-所以按照官方提供的方法编译cartographer_turtlebot是最妥当的方式，该方法在编译cartographer_turtlebot时一并编译安装了cartographer、ceres-solver、cartographer_ros，所有编译和安装均独立于catkin_ws工作空间内，也易于移植和删除。
+总之按照官方提供的catkin_make_isolated方法编译cartographer_turtlebot是最妥当的方式，该方法在编译cartographer_turtlebot时一并独立地编译安装了cartographer、ceres-solver、cartographer_ros，所有编译和安装均在catkin_ws工作空间内，也易于移植和删除。
 
 
 ----------
