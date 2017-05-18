@@ -25,7 +25,7 @@
               $(find cartographer_turtlebot)/configuration_files
           -configuration_basename $(arg configuration_basename)"
       output="screen">
-    <remap from="scan" to="/laser_scan" />
+    <remap from="points2" to="/camera/depth/points" />
   </node>
 
   <node name="flat_world_imu_node" pkg="cartographer_turtlebot"
